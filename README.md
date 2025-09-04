@@ -27,7 +27,7 @@ pip install -r reqirements.txt
 ```
 ### Methods
 It is the efficient learning method of YOLOv11 especially based on WebUI dataset.
-********************************How to use********************************
+*********************************************************************************
 1. train
    1) change the cfg/datasets/*.yaml
    2) if you want to train my method, change the trainer(engine/trainer.py) to "maml_trainer.py"
