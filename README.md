@@ -25,7 +25,7 @@ docker attach YOLOv11_new
 ```
 pip install -r reqirements.txt
 ```
-### How to use
+### Methods
 It is the efficient learning method of YOLOv11 especially based on WebUI dataset.
 ********************************How to use********************************
 1. train
