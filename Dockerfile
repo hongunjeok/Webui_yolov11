@@ -1,5 +1,5 @@
-# Use Ultralytics official image instead of Nvidia CUDA
-FROM ultralytics/ultralytics:latest
+# Base image with CUDA 12.1 and cuDNN 8
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu20.04
 
 # Set timezone and locale
 ENV TZ=Asia/Seoul
@@ -7,7 +7,7 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Set environment variables
+# Environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -15,43 +15,32 @@ ENV PYTHONUNBUFFERED=1 \
     MKL_THREADING_LAYER=GNU \
     OMP_NUM_THREADS=1 
 
-# Install additional dependencies
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    gcc git zip unzip wget curl htop libgl1 libglib2.0-0 libpython3-dev gnupg g++ libusb-1.0-0 libsm6 \
+    gcc git zip unzip wget curl htop libgl1 libglib2.0-0 libpython3-dev gnupg g++ libusb-1.0-0 libsm6 python3-pip python3.8 python3.8-venv \
     && rm -rf /var/lib/apt/lists/*
 
-# Security updates
+# Upgrade security packages
 RUN apt upgrade --no-install-recommends -y openssl tar
 
-# Create working directory
-WORKDIR /ultralytics
+# Set Python version
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
+
+# Upgrade pip
+RUN python -m pip install --upgrade pip
+
+# Install PyTorch with CUDA 12.1 support
+RUN pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 --extra-index-url https://download.pytorch.org/whl/cu121
+
+# Install additional Python packages (example)
+RUN pip install numpy pandas matplotlib scikit-learn
+
+# Set working directory
+WORKDIR /workspace
 
 # Copy project files
-COPY . .
-
-# Download required model file
-ADD https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt .
-
-# Install additional Python dependencies
-RUN pip install uv
-RUN uv pip install --system -e ".[export]" tensorrt-cu12 "albumentations>=1.4.6" comet pycocotools
-
-# Export model to different formats
-RUN yolo export model=tmp/yolo11n.pt format=edgetpu imgsz=32 || yolo export model=tmp/yolo11n.pt format=edgetpu imgsz=32
-RUN yolo export model=tmp/yolo11n.pt format=ncnn imgsz=32
-
-# Install additional machine learning libraries
-RUN uv pip install --system "paddlepaddle>=2.6.0" x2paddle
-RUN uv pip install --system numpy==1.23.5
-
-# Cleanup unnecessary files
-RUN rm -rf tmp /root/.config/Ultralytics/persistent_cache.json
-
-# Expose necessary ports
-EXPOSE 8000
-EXPOSE 8888
-EXPOSE 22
+COPY . /workspace
 
 # Default command
-CMD ["/bin/bash"]
+CMD ["bash"]

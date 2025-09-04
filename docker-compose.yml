@@ -2,7 +2,7 @@ version: '2.3'
   
 services:
   main:
-    container_name: YOLOv11
+    container_name: YOLOv11_new
     build:
       context: ./
       dockerfile: Dockerfile
@@ -28,9 +28,9 @@ services:
       - "8000"
       - "22"
     ports:
-      - "16080:8000"
-      - "16888:8888"
-      - "16082:22"
+      - "9993:8000"
+      - "9992:8888"
+      - "9991:22"
     stdin_open: true
     tty: true
 
