@@ -30,7 +30,7 @@ It is the efficient learning method of YOLOv11 especially based on WebUI dataset
 *********************************************************************************
 1. train
    1) change the cfg/datasets/*.yaml
-   2) if you want to train my method, change the trainer(engine/trainer.py) to "maml_trainer.py"
+   2) if you want to train using my method, change the trainer(engine/trainer.py) to "maml_trainer.py"
    3) and then type the words 'python train.py' on your command line
    4) if your command line shows the below status, you succeed.(you should see the "Meta-loss" status)
       
