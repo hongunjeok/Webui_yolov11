@@ -18,7 +18,7 @@ git clone https://github.com/hongunjeok/Webui_yolov11.git
 ```
  - 도커 시작
 ```
-docker-compose up -d --build
+docker-compose up -d
 docker attach YOLOv11_new
 ```
 ### Library 설치
